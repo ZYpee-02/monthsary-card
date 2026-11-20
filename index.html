@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>A little love letter</title>
+<style>
+:root{color-scheme:light;--ink:#481a2b;--red:#88264a;--paper:#fff8ef}
+*{box-sizing:border-box}
+body{margin:0;min-height:100svh;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at top,#ac4d63,#641d3a 59%,#361129);color:var(--ink);font:17px/1.55 system-ui,sans-serif}
+main{position:relative;width:min(100%,600px);padding:clamp(25px,7vw,60px);text-align:center;background:var(--paper);border-radius:4px;box-shadow:0 25px 75px #24041280}
+main::before{content:"";position:absolute;inset:9px;border:1px solid #ca9e95;pointer-events:none}
+h1,h2{font-family:Georgia,serif;font-weight:400;line-height:.98;margin:10px 0 20px;letter-spacing:-.055em;font-size:clamp(45px,10vw,78px)}
+h1 em{color:var(--red)}
+h2{font-size:clamp(39px,8vw,62px)}
+.kicker{letter-spacing:.19em;text-transform:uppercase;font-weight:700;font-size:.875rem;color:var(--red)}
+p{margin:0 auto 20px;max-width:35ch}
+button{cursor:pointer;color:#fff8ef;background:var(--red);font:600 1rem system-ui;border:0;border-radius:99px;padding:14px 24px;min-height:48px}
+button:hover{background:#651a36}
+button:focus-visible{outline:3px solid #ba5c76;outline-offset:4px}
+.envelope{display:block;position:relative;margin:27px auto 23px;width:180px;height:114px;border-radius:8px;background:linear-gradient(154deg,transparent 50%,#ecafad 51%) left/50% 100% no-repeat,linear-gradient(206deg,transparent 50%,#f4bdb7 51%) right/50% 100% no-repeat,#f8cec4;box-shadow:0 10px 18px #71284032;transition:transform .25s}
+.envelope:hover{transform:rotate(-5deg) translateY(-4px)}
+.envelope::before{content:"";position:absolute;inset:0;background:#e6a19f;clip-path:polygon(0 0,100% 0,50% 63%);border-radius:inherit}
+.seal{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%);width:43px;height:43px;border-radius:50%;display:grid;place-items:center;background:#a13556;box-shadow:0 2px 5px #53152a55,inset 0 0 0 3px #bd6077;font-size:22px}
+.letter{text-align:left;font-family:Georgia,serif;font-size:1.2rem;margin:24px auto;color:#542b38}
+.letter p{max-width:36ch}
+.notes{display:flex;justify-content:center;gap:12px;margin:25px 0}
+.note{font-size:25px;padding:0;width:52px;height:52px;background:#f3d1ce;color:var(--red)}
+.note:hover,.note[aria-pressed=true]{background:var(--red);color:white}
+#note-text{min-height:5.3em;display:grid;place-items:center;font:italic 1.24rem/1.4 Georgia,serif}
+.text-button{display:block;margin:10px auto 0;color:var(--red);background:transparent;text-decoration:underline}
+.text-button:hover{color:#481a2b;background:#f5ded9}
+.big-heart{font-size:76px;line-height:1;color:var(--red);margin:20px 0}
+section:not([hidden]){animation:appear .4s ease both}
+@keyframes appear{from{opacity:0;transform:translateY(8px)}}
+.spark{position:fixed;z-index:2;pointer-events:none;left:50%;top:50%;color:#e18ea7;font-size:24px;animation:fly 1.4s ease-out forwards}
+@keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(var(--spin));opacity:0}}
+@media(prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}.spark{display:none}}
+</style>
+<main>
+<section id="cover">
+<div class="kicker">A little letter for you</div>
+<h1 tabindex="-1">Happy<br><em>monthsary.</em></h1>
+<button class="envelope" data-go="letter" aria-label="Open the envelope"><span class="seal" aria-hidden="true">♥</span></button>
+<button data-go="letter">Open my letter</button>
+</section>
+<section id="letter" hidden>
+<div class="kicker">Happy monthsary</div>
+<h2 tabindex="-1">Hi, my love.</h2>
+<div class="letter">
+<p>I love that I get to tell you the smallest things about my day and hear all about yours. Even when nothing much happened, I still look forward to talking to you.</p>
+<p>I’m so happy I get to call you my girlfriend. I love you, and I’m looking forward to more ordinary days with you.</p>
+</div>
+<button data-go="hearts">I left you three little hearts</button>
+</section>
+<section id="hearts" hidden>
+<h2 tabindex="-1">Three little hearts</h2>
+<p>Tap each heart to find a note.</p>
+<div class="notes">
+<button class="note" aria-label="First note" aria-pressed="false">♥</button>
+<button class="note" aria-label="Second note" aria-pressed="false">♥</button>
+<button class="note" aria-label="Third note" aria-pressed="false">♥</button>
+</div>
+<p id="note-text" aria-live="polite"></p>
+<button data-go="hug">One last thing</button>
+</section>
+<section id="hug" hidden>
+<div class="big-heart" aria-hidden="true">♥</div>
+<h2 tabindex="-1">Come here, love.</h2>
+<p>Until I can hug you in person, here’s one you can keep tapping.</p>
+<button id="send-hug">Get a hug</button>
+<p id="hug-status" aria-live="polite" style="margin-top:16px;min-height:1.55em"></p>
+<button class="text-button" data-go="cover">Read it again</button>
+</section>
+</main>
+<script>
+const messages = [
+  'I still smile when I see your name pop up on my phone.',
+  'I love when we say “goodnight” and somehow keep talking.',
+  'Next time I see you, I’m holding on a little longer.'
+]
+const sections = [...document.querySelectorAll('main section')]
+const noteButtons = [...document.querySelectorAll('.note')]
+const noteText = document.getElementById('note-text')
+const hugStatus = document.getElementById('hug-status')
+let hugCount = 0
+document.querySelectorAll('[data-go]').forEach(button => {
+  button.addEventListener('click', () => {
+    const next = document.getElementById(button.dataset.go)
+    sections.forEach(section => { section.hidden = section !== next })
+    if (next.id === 'cover') {
+      noteText.textContent = ''
+      noteButtons.forEach(note => note.setAttribute('aria-pressed', 'false'))
+      hugCount = 0
+      hugStatus.textContent = ''
+    }
+    next.querySelector('h1,h2').focus()
+  })
+})
+noteButtons.forEach((button, index) => {
+  button.addEventListener('click', () => {
+    noteText.textContent = messages[index]
+    noteButtons.forEach(note => note.setAttribute('aria-pressed', String(note === button)))
+  })
+})
+document.getElementById('send-hug').addEventListener('click', () => {
+  hugCount += 1
+  hugStatus.textContent = hugCount === 1 ? 'One big hug, just for you. ♡' : hugCount + ' hugs and counting. ♡'
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  for (let i = 0; i < 18; i += 1) {
+    const heart = document.createElement('span')
+    const angle = i * Math.PI * 2 / 18
+    const distance = 75 + Math.random() * 145
+    heart.className = 'spark'
+    heart.setAttribute('aria-hidden', 'true')
+    heart.textContent = i % 2 ? '♥' : '♡'
+    heart.style.setProperty('--x', Math.cos(angle) * distance + 'px')
+    heart.style.setProperty('--y', Math.sin(angle) * distance + 'px')
+    heart.style.setProperty('--spin', (i % 2 ? 110 : -110) + 'deg')
+    document.body.append(heart)
+    heart.addEventListener('animationend', () => heart.remove(), {once:true})
+  }
+})
+</script>
+</html>
